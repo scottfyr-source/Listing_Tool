@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forever Young Records - Listing Tool</title>
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --background-color: #f8f9fa;
+            --border-color: #ced4da;
+            --text-color: #343a40;
+            --spacing: 15px;
+            --danger-color: #dc3545;
+            --fyr-blue: #0000FF; /* From logo */
+            --fyr-yellow: #FFFF00; /* From logo */
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .page-header-banner {
+            width: 100%;
+            max-width: 900px; /* Match container width */
+            margin: 0 auto 20px auto; /* Center it */
+            display: block;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* NEW STYLES FOR LOGO */
+        .logo-container {
+            text-align: center; /* Center the image */
+            margin-bottom: 25px;
+        }
+
+        .logo {
+            max-width: 200px; /* Adjust size as needed */
+            height: auto;
+        }
+
+        h2 {
+            background-color: var(--fyr-blue);
+            color: var(--fyr-yellow);
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 2px solid var(--fyr-yellow);
+            margin-bottom: 25px;
+            text-align: center; /* Center the main title */
+            font-weight: bold;
+        }
+
+        /* --- TAB STYLES --- */
+        .tab-container {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 25px;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+            font-size: 16px;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px; /* Align with container border */
+        }
+
+        .tab-btn.active {
+            font-weight: bold;
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none; /* Hide all tab content by default */
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--secondary-color);
+        }
+
+        select, input[type="text"], textarea {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        /* Specific styling for multi-selects to show multiple options */
+        select[multiple] {
+            min-height: 100px; 
+        }
+
+        select:focus, input:focus, textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 0.1rem rgba(0, 123, 255, 0.25);
+        }
+
+        .description-box {
+            grid-column: 1 / -1;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            grid-column: 1 / -1;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        
+        #generateBtn, #clearBtn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 4px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #generateBtn {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        #generateBtn:hover {
+            background-color: #218838;
+        }
+
+        #clearBtn {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        #clearBtn:hover {
+            background-color: #c82333;
+        }
+
+        /* Styles for Radio Button Groups */
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 8px;
+            align-items: center;
+        }
+
+        .radio-group label {
+            font-weight: normal;
+            margin-bottom: 0;
+        }
+
+        /* Styles for Profile Management */
+        .profile-management {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .profile-management label {
+            margin-bottom: 0;
+        }
+
+        .profile-management select, .profile-management input {
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        .profile-management button {
+            padding: 8px 12px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+        }
+        
+        #saveProfileBtn { background-color: var(--primary-color); }
+        #deleteProfileBtn { background-color: var(--danger-color); }
+        #saveProfileBtn:hover { background-color: #0056b3; }
+        #deleteProfileBtn:hover { background-color: #c82333; }
+
+        .profile-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .output-section {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .output-section .form-group {
+            flex-grow: 1;
+        }
+
+        .store-front-img {
+            max-width: 120px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">     
+        </div>
+        <h2>Vinyl/CD/Cassette Listing Data Entry Tool</h2>
+
+        <div class="tab-container">
+            <button class="tab-btn active" data-tab="listingTool">Listing Tool</button>
+            <button class="tab-btn" data-tab="futureTool">Future Tool</button>
+        </div>
+
+        <!-- Tab Content Panels -->
+        <div id="listingTool" class="tab-content" style="display: block;"> <!-- Show this one by default -->
+            <div class="form-grid">
+
+                <div class="profile-management">
+                    <select id="profileSelector"></select>
+                    <input type="text" id="profileName" placeholder="New Profile Name">
+                    <button id="saveProfileBtn">💾 Save</button>
+                    <button id="deleteProfileBtn">❌ Delete</button>
+                </div>
+
+                <div class="form-group">
+                    <label for="conditionOfMedia">1. Condition of Media</label>
+                    <select id="conditionOfMedia"></select>
+                    <div class="radio-group">
+                        <label><input type="radio" name="media_modifier" value="" checked> None</label>
+                        <label><input type="radio" name="media_modifier" value="++"> ++</label>
+                        <label><input type="radio" name="media_modifier" value="+"> +</label>
+                        <label><input type="radio" name="media_modifier" value="-"> -</label>
+                    </div>
+                    <label for="mediaDescriptionText" style="font-weight: normal; margin-top: 5px;">Media Description Text (e.g., surface marks)</label>
+                    <input type="text" id="mediaDescriptionText">
+                </div>
+
+                <div class="form-group">
+                    <label for="sleeveCondition">2. Sleeve/Artwork/Insert Condition</label>
+                    <select id="sleeveCondition"></select>
+                    <div class="radio-group">
+                        <label><input type="radio" name="sleeve_modifier" value="" checked> None</label>
+                        <label><input type="radio" name="sleeve_modifier" value="++"> ++</label>
+                        <label><input type="radio" name="sleeve_modifier" value="+"> +</label>
+                        <label><input type="radio" name="sleeve_modifier" value="-"> -</label>
+                    </div>
+                    <label for="sleeveDetailText" style="font-weight: normal; margin-top: 5px;">Describe Flaws/Details (e.g., cut corner, hole punch)</label>
+                    <input type="text" id="sleeveDetailText">
+                </div>
+
+                <div class="form-group">
+                    <label for="mediaFormat">3. Media Format</label>
+                    <select id="mediaFormat"></select>
+                    <label for="mediaFormat_text" style="font-weight: normal; margin-top: 5px;">Format Detail Text (e.g., 2x, Maxi)</label>
+                    <input type="text" id="mediaFormat_text">
+                </div>
+
+                <div class="form-group">
+                    <label for="colorWeightRPM">4. Color/Weight/RPM/Mono</label>
+                    <input type="text" id="colorWeightRPM">
+                </div>
+
+                <div class="form-group">
+                    <label for="country">5. Country</label>
+                    <input type="text" id="country" value="USA">
+                </div>
+
+                <div class="form-group">
+                    <label for="outOfPrint">6. Out Of Print</label>
+                    <select id="outOfPrint"></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="formatTags">7. Format Tags (Hold CTRL/CMD for Multi-Select)</label>
+                    <select id="formatTags" multiple></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="edition">8. Edition (Hold CTRL/CMD for Multi-Select)</label>
+                    <select id="edition" multiple></select>
+                </div>
+
+            </div>
+
+            <hr style="margin: 30px 0;">
+
+            <div class="form-grid" style="grid-template-columns: repeat(4, 1fr);">
+                <div class="form-group">
+                    <label for="Year">9. Year</label>
+                    <input type="text" id="Year">
+                </div>
+                <div class="form-group">
+                    <label for="recordLabel">10. Record Label</label>
+                    <input type="text" id="recordLabel">
+                </div>
+                <div class="form-group">
+                    <label for="catalogueNumber">11. Catalogue Number</label>
+                    <input type="text" id="catalogueNumber">
+                </div>
+                <div class="form-group">
+                    <label for="trackTimeInfo">12. Tracks (Track/Time Info)</label>
+                    <input type="text" id="trackTimeInfo">
+                </div>
+            </div>
+
+            <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="form-group">
+                    <label for="boxNumber">Box Number (Internal Only) - REQUIRED FOR SKU</label>
+                    <input type="text" id="boxNumber">
+                </div>
+                <div class="form-group">
+                    <label for="lister">Lister Initials (Internal Only) - REQUIRED FOR SKU</label>
+                    <input type="text" id="lister" maxlength="3">
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button id="generateBtn">📋 Generate Listing Data & Copy</button>
+                <button id="clearBtn">🗑️ Clear Form</button>
+            </div>
+
+
+            <hr style="margin: 30px 0;">
+
+            <div class="output-section">
+                <div class="form-group description-box">
+                    <label for="outputData">Generated Listing Data (SKU Line 1, Description Line 2)</label>
+                    <textarea id="outputData" rows="10" readonly placeholder="The generated SKU and listing data will appear here."></textarea>
+        </div>
+
+        <div id="futureTool" class="tab-content">
+            <h3>Future Tool Area</h3>
+            <p>This is where a new tool, like an inventory search or a sales report generator, could be added.</p>
+        </div>
+
+    </div>
+
+    <script>
+        // --- DATA SOURCE: EMBEDDED JAVASCRIPT OBJECT ---
+        const data = {
+            "Condition of Media": ["Factory Sealed", "Near Mint", "Used Like New", "Used Very Good", "Used Good", "Used Good"],
+            "Format Tags": ["Hype Sticker", "Security Strip", "RSD Sticker", "Obi", "Deluxe", "Limited Edition", "Remastered", "Compilation", "Enhanced", "Autographed", "Anniversary", "Numbered", "Alternate Cover", "Promo", "No Barcode Version", "Region Code", "Multi-Channel", "Clean Version"],
+            "Edition": ["Reissue", "Remastered", "Club Edition", "Repress", "Etched", "RSD", "Mono", "Digipak", "Gatefold", "Promo"],
+            "Media Format": ["Vinyl", "CD", "Cassette", "Picture Disc", "Gatefold", "EP", "12' or 7' Vinyl Single", "DVD", "Blu-ray", "VHS", "Box Set", "Single"],
+            "Sleeve/Artwork/Insert Condition": ["Near Mint", "Like New", "Very Good", "Good", "Acceptable"],
+            "Out of Print": ["Yes", "No"]
+        };
+        
+        // --- PROFILE MANAGEMENT CONSTANTS ---
+        const PROFILES_STORAGE_KEY = 'fyr_listing_profiles';
+        const PROFILE_FIELD_IDS = ['conditionOfMedia', 'mediaDescriptionText', 'formatTags', 'outOfPrint', 'country', 'edition', 'colorWeightRPM', 'mediaFormat', 'mediaFormat_text', 'sleeveCondition', 'sleeveDetailText', 'boxNumber', 'lister'];
+
+        // Helper function to get value, trimming and returning null if empty
+        const getVal = (id) => {
+            const el = document.getElementById(id);
+            if (!el) return null;
+            
+            if (el.multiple) { // Handle multi-selects: join selected values with a SPACE
+                const selectedOptions = Array.from(el.selectedOptions)
+                    .map(option => option.value.trim())
+                    .filter(value => value !== "");
+                // Using ' ' for multi-selects
+                return selectedOptions.length > 0 ? selectedOptions.join(' ') : null;
+            } else {
+                // Handle single select/text input
+                const value = el.value.trim();
+                // Special handling for Out of Print 'No' to return null
+                if (id === 'outOfPrint' && value.toLowerCase() === 'no') return null;
+                return value === "" ? null : value;
+            }
+        };
+
+        // Function to populate a dropdown 
+        function populateDropdown(selectId, optionsArray) {
+            const selectElement = document.getElementById(selectId);
+            selectElement.innerHTML = '';
+            
+            const defaultOption = document.createElement('option');
+            defaultOption.value = "";
+            defaultOption.textContent = "-- Select --";
+            // Only add default option to SINGLE select menus
+            if (!selectElement.multiple) {
+                selectElement.appendChild(defaultOption);
+            }
+            
+            optionsArray.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item;
+                option.textContent = item;
+                selectElement.appendChild(option);
+            });
+        }
+        
+        /**
+         * Clears all input fields and dropdowns in the form.
+         */
+        function clearForm() {
+            const formElements = document.querySelectorAll('.container select, .container input[type="text"], .container textarea');
+            
+            formElements.forEach(element => {
+                if (element.tagName === 'SELECT') {
+                    // Reset single selects to default, deselect all for multi-selects
+                    element.selectedIndex = 0; 
+                } else {
+                    element.value = '';
+                }
+            });
+            // Uncheck all radio buttons
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                // Set the 'None' option to checked
+                if (radio.value === "") radio.checked = true;
+            });
+            document.getElementById('outputData').value = ''; 
+            console.log("Form cleared.");
+            
+            // Also reset the country to its default
+            document.getElementById('country').value = 'USA';
+        }
+
+        /**
+         * Converts Media Format to a standardized SKU tag (CASS, CD, VINYL, DVD).
+         */
+        function getMediaFormatSKUTag(mediaFormat) {
+            if (!mediaFormat) return 'UNKNOWN';
+
+            const format = mediaFormat.toLowerCase();
+            
+            if (format.includes('cassette')) {
+                return 'CASS';
+            }
+            if (format.includes('cd')) {
+                return 'CD';
+            }
+            // DVD, Blu-ray, VHS are all consolidated into DVD
+            if (format.includes('dvd') || format.includes('blu-ray') || format.includes('vhs')) {
+                return 'DVD';
+            }
+            // All vinyl/single/EP/Box Set media formats are consolidated into VINYL
+            if (format.includes('vinyl') || format.includes('picture disc') || format.includes('ep') || format.includes('single') || format.includes('box set')) {
+                return 'VINYL';
+            }
+
+            return 'OTHER'; // Fallback if selected format doesn't match the criteria
+        }
+
+        /**
+         * Converts Condition to a standardized SKU tag (NEW or USED).
+         */
+        function getConditionSKUTag(condition) {
+            if (!condition) return 'USED'; 
+            // Factory Sealed is NEW, everything else is USED
+            return condition.toLowerCase().includes('sealed') ? 'NEW' : 'USED';
+        }
+
+        /**
+         * Generates the complete SKU string.
+         * Format: Box Number-Lister_initialsYEAR-MMDD-MEDIA_FORMAT-CONDITION-HHMM
+         */
+        function generateSKU() {
+            const now = new Date();
+            
+            // Date components
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hour = String(now.getHours()).padStart(2, '0');
+            const minute = String(now.getMinutes()).padStart(2, '0');
+            
+            // Form values
+            const v_boxNumber = getVal('boxNumber') || 'NOBOX';
+            const v_listerInitials = (getVal('lister') || 'XX').toUpperCase();
+            const v_mediaFormat = getVal('mediaFormat');
+            const v_mediaCondition = getVal('conditionOfMedia');
+
+            // SKU components
+            const datePart = `${year}-${month}${day}`;
+            const mediaTag = getMediaFormatSKUTag(v_mediaFormat);
+            const conditionTag = getConditionSKUTag(v_mediaCondition);
+            const timePart = `${hour}${minute}`;
+
+            // Assembly
+            // Format: Box Number-Lister_initialsYEAR-MMDD-MEDIA_FORMAT-CONDITION-HHMM
+            const sku = `${v_boxNumber}-${v_listerInitials}${datePart}-${mediaTag}-${conditionTag}-${timePart}`;
+            return sku;
+        }
+
+
+        /**
+         * The core function to gather all inputs and format them into the structured output.
+         */
+        function generateListingData() {
+            const outputParts = []; 
+            const metadataParts = []; 
+
+            // --- SKU Generation (First Line) ---
+            const sku = generateSKU();
+            
+            // --- Listing Description Generation (Second Line) ---
+            
+            // Helper to get condition with modifier
+            const getConditionWithModifier = (selectId, radioGroupName) => {
+                let condition = getVal(selectId);
+                if (!condition) return null;
+
+                const modifier = document.querySelector(`input[name="${radioGroupName}"]:checked`).value;
+                if (modifier) {
+                    condition = `${condition}${modifier}`;
+                }
+                return condition;
+            };
+
+            // 1. Define the Values
+            const v_mediaCondition = getConditionWithModifier('conditionOfMedia', 'media_modifier');
+            const v_mediaConditionDetail = getVal('mediaDescriptionText');
+            const v_formatTags = getVal('formatTags'); // Joined string or null
+            const v_year = getVal('Year');
+            const v_country = getVal('country');
+            const v_edition = getVal('edition'); // Joined string or null
+            const v_colorWeightRPM = getVal('colorWeightRPM');
+            const v_mediaFormat = getVal('mediaFormat');
+            const v_mediaFormatDetail = getVal('mediaFormat_text');
+            const v_sleeveCondition = getConditionWithModifier('sleeveCondition', 'sleeve_modifier');
+            const v_sleeveDetailText = getVal('sleeveDetailText');
+            const v_outOfPrintSelect = getVal('outOfPrint'); 
+            const v_trackInfo = getVal('trackTimeInfo');
+            const v_recordLabel = getVal('recordLabel');
+            const v_catalogueNumber = getVal('catalogueNumber');
+            
+            // 2. Build the String
+            
+            if (v_mediaCondition) outputParts.push(v_mediaCondition);
+            if (v_mediaConditionDetail) outputParts.push(v_mediaConditionDetail);
+            if (v_formatTags) outputParts.push(v_formatTags);
+            if (v_year) outputParts.push(v_year);
+            if (v_country) outputParts.push(v_country);
+            if (v_edition) outputParts.push(v_edition);
+            if (v_colorWeightRPM) outputParts.push(v_colorWeightRPM);
+            if (v_mediaFormat) outputParts.push(v_mediaFormat);
+            if (v_mediaFormatDetail) outputParts.push(v_mediaFormatDetail);
+            if (v_sleeveCondition) outputParts.push(v_sleeveCondition);
+            if (v_sleeveDetailText) outputParts.push(v_sleeveDetailText);
+            
+            // OutOfPrint logic
+            if (v_outOfPrintSelect === "Yes") {
+                 outputParts.push("is Out of Print");
+            }
+            
+            // Tracks
+            if (v_trackInfo) outputParts.push("with " + v_trackInfo + " Tracks");
+
+            // Label & Catalogue (for after the dash)
+            if (v_recordLabel) metadataParts.push(v_recordLabel);
+            if (v_catalogueNumber) metadataParts.push(v_catalogueNumber);
+
+            // Final Assembly of Listing Description
+            let mainBody = outputParts.join(' ');
+            let metadataString = metadataParts.join(' '); 
+            let listingDescription = mainBody;
+
+            // Append the dash and metadata if they exist
+            if (metadataString) {
+                listingDescription += " - " + metadataString;
+            }
+
+            // --- Final Output and Clipboard ---
+            const finalOutput = `${sku}\n${listingDescription}`;
+            
+            document.getElementById('outputData').value = finalOutput;
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(finalOutput)
+                    .then(() => {
+                        console.log('Listing data copied to clipboard!');
+                    })
+                    .catch(err => {
+                        console.error('Could not copy text: ', err);
+                        alert('Listing data generated, but failed to copy to clipboard. Please copy manually.');
+                    });
+            }
+        }
+
+        // --- PROFILE MANAGEMENT FUNCTIONS ---
+
+        /**
+         * Loads profiles from localStorage and populates the profile selector dropdown.
+         */
+        function loadProfilesIntoSelector() {
+            const profiles = JSON.parse(localStorage.getItem(PROFILES_STORAGE_KEY)) || {};
+            const selector = document.getElementById('profileSelector');
+            selector.innerHTML = '<option value="">-- Select a Profile --</option>'; // Default option
+            
+            Object.keys(profiles).sort().forEach(profileName => {
+                const option = document.createElement('option');
+                option.value = profileName;
+                option.textContent = profileName;
+                selector.appendChild(option);
+            });
+        }
+
+        /**
+         * Saves the current state of the form fields (above the line) to localStorage.
+         */
+        function saveCurrentProfile() {
+            const profileName = document.getElementById('profileName').value.trim();
+            if (!profileName) {
+                alert('Please enter a name for the profile.');
+                return;
+            }
+
+            const profiles = JSON.parse(localStorage.getItem(PROFILES_STORAGE_KEY)) || {};
+            
+            const newProfileData = {};
+            PROFILE_FIELD_IDS.forEach(id => {
+                const el = document.getElementById(id);
+                if (el.multiple) {
+                    newProfileData[id] = Array.from(el.selectedOptions).map(opt => opt.value);
+                } else {
+                    newProfileData[id] = el.value;
+                }
+            });
+            
+            // Also save radio button states
+            newProfileData['media_modifier'] = document.querySelector('input[name="media_modifier"]:checked').value;
+            newProfileData['sleeve_modifier'] = document.querySelector('input[name="sleeve_modifier"]:checked').value;
+
+            profiles[profileName] = newProfileData;
+            localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(profiles));
+            
+            alert(`Profile "${profileName}" saved!`);
+            document.getElementById('profileName').value = ''; // Clear input
+            loadProfilesIntoSelector(); // Refresh dropdown
+        }
+
+        /**
+         * Loads a selected profile's data into the form fields.
+         */
+        function loadSelectedProfile() {
+            const profileName = document.getElementById('profileSelector').value;
+            if (!profileName) {
+                clearForm(); // If they select the default, clear the form
+                return;
+            }
+
+            const profiles = JSON.parse(localStorage.getItem(PROFILES_STORAGE_KEY)) || {};
+            const profileData = profiles[profileName];
+
+            if (!profileData) {
+                alert('Error: Could not find the selected profile.');
+                return;
+            }
+
+            // Apply saved values to form fields
+            PROFILE_FIELD_IDS.forEach(id => {
+                const el = document.getElementById(id);
+                const savedValue = profileData[id];
+                if (el.multiple) {
+                    Array.from(el.options).forEach(opt => {
+                        opt.selected = savedValue && savedValue.includes(opt.value);
+                    });
+                } else {
+                    el.value = savedValue || '';
+                }
+            });
+            
+            // Apply radio button states
+            document.querySelector(`input[name="media_modifier"][value="${profileData['media_modifier'] || ''}"]`).checked = true;
+            document.querySelector(`input[name="sleeve_modifier"][value="${profileData['sleeve_modifier'] || ''}"]`).checked = true;
+        }
+
+        /**
+         * Deletes the currently selected profile from localStorage.
+         */
+        function deleteSelectedProfile() {
+            const profileName = document.getElementById('profileSelector').value;
+            if (!profileName) {
+                alert('Please select a profile to delete.');
+                return;
+            }
+
+            if (confirm(`Are you sure you want to delete the profile "${profileName}"?`)) {
+                const profiles = JSON.parse(localStorage.getItem(PROFILES_STORAGE_KEY)) || {};
+                delete profiles[profileName];
+                localStorage.setItem(PROFILES_STORAGE_KEY, JSON.stringify(profiles));
+                alert(`Profile "${profileName}" has been deleted.`);
+                loadProfilesIntoSelector(); // Refresh dropdown
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Populate Dropdowns directly from the embedded 'data' object
+            populateDropdown('conditionOfMedia', data["Condition of Media"]);
+            populateDropdown('formatTags', data["Format Tags"]);
+            populateDropdown('edition', data["Edition"]);
+            populateDropdown('mediaFormat', data["Media Format"]);
+            populateDropdown('sleeveCondition', data["Sleeve/Artwork/Insert Condition"]);
+            populateDropdown('outOfPrint', data["Out of Print"]);
+            
+            // Attach Event Listeners
+            document.getElementById('generateBtn').addEventListener('click', generateListingData);
+            document.getElementById('clearBtn').addEventListener('click', clearForm);
+
+            // Attach Profile Management Event Listeners
+            document.getElementById('saveProfileBtn').addEventListener('click', saveCurrentProfile);
+            document.getElementById('profileSelector').addEventListener('change', loadSelectedProfile);
+            document.getElementById('deleteProfileBtn').addEventListener('click', deleteSelectedProfile);
+            document.getElementById('parseBtn').addEventListener('click', parsePastedData);
+            
+            // --- TAB SWITCHING LOGIC ---
+            const tabContainer = document.querySelector('.tab-container');
+            tabContainer.addEventListener('click', (e) => {
+                if (e.target.matches('.tab-btn')) {
+                    const targetTab = e.target.dataset.tab;
+
+                    // Deactivate all tabs and content
+                    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
+
+                    // Activate the clicked tab and its content
+                    e.target.classList.add('active');
+                    document.getElementById(targetTab).style.display = 'block';
+                }
+            });
+
+            // Initial load of profiles into the selector
+            loadProfilesIntoSelector();
+        });
+    </script>
+
+</body>
+</html>

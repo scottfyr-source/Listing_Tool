@@ -1,0 +1,73 @@
+{
+    "Condition of Media": [
+        "Factory Sealed",
+        "Used Like New",
+        "Used Very Good (++)",
+        "Near Mint Minus",
+        "Used Good (+)"
+    ],
+    "Format Tags": [
+        "Featuring / Hype Sticker",
+        "with Security Strip",
+        "with (&) RSD Featuring Strip / Obi",
+        "Deluxe / Limited Edition",
+        "Remastered",
+        "Compilation",
+        "Enhanced",
+        "Autographed",
+        "Anniversary",
+        "Numbered",
+        "Alternate Cover / Promo",
+        "No Barcode Version",
+        "Region Code",
+        "Multi-Channel",
+        "Clean Version"
+    ],
+    "Edition": [
+        "Reissue / Remastered",
+        "Club Edition",
+        "Repress",
+        "Etched",
+        "RSD",
+        "Mono",
+        "Digipak",
+        "Gatefold",
+        "Promo"
+    ],
+    "Media Format": [
+        "LP Vinyl",
+        "Picture Disc",
+        "Gatefold (LP)",
+        "EP",
+        "12' or 7' Vinyl Single",
+        "CD",
+        "DVD",
+        "Blu-ray",
+        "VHS",
+        "Box Set (Media)",
+        "Cassette",
+        "Single (Media)"
+    ],
+    "Media Condition Description": [
+        "N/A (New or high grade)",
+        "If used Very Good+ or below, add reason"
+    ],
+    "Sleeve/Artwork/Insert Condition": [
+        "Like New",
+        "Very Good++",
+        "Near Mint Minus",
+        "Good+",
+        "Very Good+",
+        "Acceptable",
+        "Good"
+    ],
+    "Sleeve/Artwork/Insert": [
+        "N/A",
+        "If different from media condition",
+        "If used Very Good+ or below, add reason (describe)"
+    ],
+    "Out of Print": [
+        "No",
+        "Yes"
+    ]
+}
